@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Animation Tester</title>
+    <link href="/character_styles.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+    <button id="up">Up</button> 
+    <button id="left">Left</button>  
+    <button id="down">Down</button> 
+    <button id="right">Right</button> 
+    <a href="/index.html">Back to DemoRoom</a>
+    <div class="Character">
+        
+        <img class="Character_shadow pixelart" src="/images/characters/shadow.png" alt="Shadow" />
+        
+        <img id="Character" class="Character_spritesheet pixelart face-left" src="/images/characters/people/Char.png" alt="Character" />
+  
+     </div>
+     <script>
+         const up = document.getElementById("up");
+         const left = document.getElementById("left");
+         const right = document.getElementById("right");
+         const down = document.getElementById("down");
+
+         const character = document.getElementById("Character")
+         
+         up.addEventListener("click",goUp);
+         left.addEventListener("click",goLeft);
+         right.addEventListener("click",goRight)
+         down.addEventListener("click",goDown)
+
+         function goUp( ){
+            console.log("Going Up");
+
+            character.classList.remove("face-left");
+            character.classList.remove("face-right");
+            character.classList.remove("face-down");
+            character.classList.add("face-up");
+
+         }
+         function goLeft( ){
+            character.classList.remove("face-up");
+            character.classList.remove("face-right");
+            character.classList.remove("face-down");
+            character.classList.add("face-left");
+
+         }
+         function goRight( ){
+            character.classList.remove("face-up");
+            character.classList.remove("face-left");
+            character.classList.remove("face-down");
+            character.classList.add("face-right");
+
+         }
+         function goDown( ){
+            character.classList.remove("face-up");
+            character.classList.remove("face-right");
+            character.classList.remove("face-left");
+            character.classList.add("face-down");
+
+         }
+     </script>
+</body>
+</html>

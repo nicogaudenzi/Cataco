@@ -25,6 +25,6 @@ class Overworld{
         hero.onload = () =>{
             this.ctx.drawImage(hero,0,0,32,32,x*16-8,y*16-18,32,32);
         };
-        hero.src = "/images/characters/people/hero.png";
+        hero.src = "/images/characters/people/Char.png";
     }
 }
