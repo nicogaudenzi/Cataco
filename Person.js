@@ -2,6 +2,7 @@ class Person extends GameObject{
     constructor(config){
         super(config);
         this.movingProgressRemaining = 0;
+        this.isStanding = false;
         this.isPlayerControlled = config.isPlayerControlled||false;
         this.directionUpdate ={
             "up":["y",-1],
@@ -15,7 +16,7 @@ class Person extends GameObject{
         {
         this.updatePosition();
         }else{
-            if(this.isPlayerControlled  && state.arrow){
+            if(!state.map.isCutscenePlaying && this.isPlayerControlled  && state.arrow){
                 this.startBehavior(state,{
                     type:"walk",
                     direction: state.arrow
@@ -26,12 +27,32 @@ class Person extends GameObject{
         
     }
     startBehavior(state, behavior){
+        this.retrying = false;
         this.direction=behavior.direction;
         if(behavior.type === "walk"){
-            if(state.map.isSpaceTaken(this.x,this.y,this.direction))return;
+
+            if(state.map.isSpaceTaken(this.x,this.y,this.direction)){
+                if (behavior.retry) {
+                    setTimeout(() => {
+                        this.startBehaviour(state, behavior)
+                    }, 10);
+                    this.retrying = true;
+                }
+                return;
+            }
              // console.log();
         state.map.moveWall(this.x,this.y,this.direction);
         this.movingProgressRemaining = 16;
+        this.updateSprite(state);
+        }
+        if (behavior.type==="stand"){
+            this.isStanding = true;
+            setTimeout(()=>{
+                utils.emitEvent("PersonStandCompleat",{
+                    whoId:this.id
+                });
+                this.isStanding=false;
+            },behavior.time);
         }
        
     }
@@ -39,6 +60,11 @@ class Person extends GameObject{
             const [property, change]=this.directionUpdate[this.direction]
             this[property]+=change;
             this.movingProgressRemaining-=1;
+            if(this.movingProgressRemaining===0){
+                utils.emitEvent("PersonWalkingCompleat",{
+                    whoId:this.id
+                });
+            }
     }
     updateSprite(){
         if(this.movingProgressRemaining>0){

@@ -22,5 +22,22 @@ const utils = {
       y+= size;
     }
     return {x,y}
-  }
+  },
+  emitEvent(name,detail){
+    const event = new CustomEvent(name,{detail});
+    document.dispatchEvent(event);
+  },
+  oppositeDirection(direction) {
+    if (direction === "left") { return "right" }
+    if (direction === "right") { return "left" }
+    if (direction === "up") { return "down" }
+    return "up"
+  },
+  wait(ms) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve()
+      }, ms)
+    })
+  },
 }

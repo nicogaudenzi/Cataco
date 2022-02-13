@@ -21,7 +21,9 @@ class Overworld{
 
             this.map.drawLowerImage(this.ctx,cameraPerson);
 
-            Object.values(this.map.gameObjects).forEach(object =>{
+            Object.values(this.map.gameObjects).sort((a,b)=>{
+                return a.y - b.y;
+            }).forEach(object =>{
                
                 object.sprite.draw(this.ctx,cameraPerson)
             });
@@ -33,11 +35,37 @@ class Overworld{
         }
         step();
     }
-    init(){
-        this.map = new OverworldMap(window.OverworldMaps.DemoRoom);
+    bindActionInput(){
+        new KeyPressListener("Enter",()=>{
+            this.map.checkForActionCutscene();
+        })
+    }
+    bindHeroPositionCheck(){
+            document.addEventListener("PersonWalkingCompleat",e=>{
+                if(e.detail.whoId==="hero"){
+                    this.map.checkForFootstepCutscene();
+                }
+            })
+    }
+    startMap(mapConfig){
+        this.map = new OverworldMap(mapConfig);
+        this.map.overworld = this; 
         this.map.mountObjects();
+    }
+    init(developing){
+        this.startMap(window.OverworldMaps.Demo);
+        this.bindActionInput();
+        this.bindHeroPositionCheck();
         this.directionInput= new DirectionInput();
         this.directionInput.init();
         this.startGameLoop();
+        if(developing){
+            this.map.startCutscene([
+                {type:"battle"}
+            ]);
+        }
+        if(window.initScene!== undefined){
+            this.map.startCutscene(window.initScene);
+        }
     }
 }
