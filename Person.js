@@ -27,18 +27,17 @@ class Person extends GameObject{
         
     }
     startBehavior(state, behavior){
-        this.retrying = false;
+         this.retrying = false;
         this.direction=behavior.direction;
-        if(behavior.type === "walk"){
-
-            if(state.map.isSpaceTaken(this.x,this.y,this.direction)){
-                if (behavior.retry) {
-                    setTimeout(() => {
-                        this.startBehaviour(state, behavior)
-                    }, 10);
-                    this.retrying = true;
-                }
-                return;
+        if (behavior.type === "walk") {
+            //Stop here if space is not free
+            if (state.map.isSpaceTaken(this.x, this.y, this.direction)) {
+                this.retrying = true; 
+              behavior.retry && setTimeout(() => {
+                this.startBehavior(state, behavior)
+              }, 10);
+      
+              return;
             }
              // console.log();
         state.map.moveWall(this.x,this.y,this.direction);
@@ -67,6 +66,7 @@ class Person extends GameObject{
             }
     }
     updateSprite(){
+        if(this.sprite.src==="")return;
         if(this.movingProgressRemaining>0){
             this.sprite.setAnimation("walk-"+this.direction);
             return;

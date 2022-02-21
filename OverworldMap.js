@@ -9,6 +9,7 @@ class OverworldMap{
         this.upperImage = new Image();
         this.upperImage.src = config.upperSrc;
         this.isCutscenePlaying = false;
+        this.isPaused = false;
     }
         drawLowerImage(ctx,cameraPerson){
             ctx.drawImage(this.lowerImage,utils.withGrid(10.5)-cameraPerson.x,utils.withGrid(6)-cameraPerson.y);
@@ -37,15 +38,16 @@ class OverworldMap{
                     event:events[i],
                     map:this,
                 })
-                await eventHandler.init();
+                const result = await eventHandler.init();
+                if(result==="LOST_BATTLE"){
+                     break;
+                }
             }
             this.isCutscenePlaying = false;
 
                 Object.values(this.gameObjects).forEach(object=>{
-                    if(object.retrying)return;
                     const current = object.behaviorLoop[object.behaviorLoopIndex];
                     if (current && current.type === "stand") {
-                        if (object.retrying) return
                         object.doBehaviorEvent(this);
                     }
                 });
@@ -58,7 +60,12 @@ class OverworldMap{
             });
 
             if (!this.isCutscenePlaying && match && match.talking.length){
-                this.startCutscene(match.talking[0].events)
+                const relevantScenario = match.talking.find(scenario=>{
+                    return(scenario.requires||[]).every(sf=>{
+                        return playerState.storyFlags[sf];
+                    })
+                })
+                relevantScenario && this.startCutscene(relevantScenario.events)
             }
         }
         checkForFootstepCutscene(){

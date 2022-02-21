@@ -46,7 +46,7 @@ class OverworldEvent{
             obj.direction = utils.oppositeDirection(this.map.gameObjects["hero"].direction);
         }
         const message = new TextMessage({
-            text: this.event.text,
+            text: window.localizationDict[this.event.text],
             onComplete: ()=>resolve()
         })
         message.init(document.querySelector(".game-container"))
@@ -56,7 +56,6 @@ class OverworldEvent{
 
         sceneTransition.init(document.querySelector(".game-container"),()=>{
             this.map.overworld.startMap(window.OverworldMaps[this.event.map]);
-            //this.map.overworld.bindHeroPositionCheck();
             resolve();
             sceneTransition.fadeOut();
         });
@@ -64,12 +63,46 @@ class OverworldEvent{
     }
     battle(resolve){
         const battle= new Battle({
-            onComplete:()=>{
-                resolve();
+            enemy: Enemies[this.event.enemyId],
+            onComplete:(didWin)=>{
+                this.map.isCutscenePlaying = false;
+
+                Object.values(this.map.gameObjects).forEach(object=>{
+                const current = object.behaviorLoop[object.behaviorLoopIndex];
+                if (current&&!object.retrying) {
+                    object.doBehaviorEvent(this.map);
+                    }
+                })
+                resolve(didWin?"WON_BATTLE":"LOST_BATTLE");
             }
         })
         battle.init(document.querySelector(".game-container"));
     }
+    pause(resolve){
+        this.map.isPaused = true;
+        const menu = new PauseMenu({
+            onComplete: ()=>{
+                resolve();
+                this.map.isPaused=false;
+                this.map.overworld.startGameLoop();
+            }
+        });     
+
+        menu.init(document.querySelector(".game-container"));
+    }
+    addStoryFlag(resolve) {
+        window.playerState.storyFlags[this.event.flag] = true;
+        resolve();
+      }
+      craftingMenu(resolve) {
+        const menu = new CraftingMenu({
+          pizzas: this.event.pizzas,
+          onComplete: () => {
+            resolve();
+          }
+        })
+        menu.init(document.querySelector(".game-container"))
+      }
     init(){
         return new Promise(resolve=>{
             this[this.event.type](resolve);

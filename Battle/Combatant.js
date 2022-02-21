@@ -3,6 +3,7 @@ class Combatant {
     Object.keys(config).forEach(key => {
       this[key] = config[key];
     })
+    this.hp =  typeof(this.hp)==="undefined"?this.maxHp: this.hp;
     this.battle = battle;
   }
 
@@ -16,9 +17,12 @@ class Combatant {
   }
 
   get isActive() {
-    return this.battle.activeCombatants[this.team] === this.id;
+    return this.battle?.activeCombatants[this.team] === this.id;
   }
 
+  get givesXP(){
+    return this.level * 20;
+  }  
   createElement() {
     this.hudElement = document.createElement("div");
     this.hudElement.classList.add("Combatant");
@@ -69,8 +73,50 @@ class Combatant {
     //Update level on screen
     this.hudElement.querySelector(".Combatant_level").innerText = this.level;
 
-  }
+    const statusElement= this.hudElement.querySelector(".Combatant_status");
+    if(this.status){
+      statusElement.innerText = this.status.type;
+      statusElement.style.display = "block";
+    }else{
+      statusElement.innerText = "";
+      statusElement.display="none";
+    }
 
+  }
+  getReplacedEvents(originalEvents){
+    if(this.status?.type==="torpe" && utils.randomFromArray([true,false,false])){
+       return [  
+         {type:"textMessage",text:`${this.name} falló por torpe`}
+       ]
+     }
+     return originalEvents;
+  }
+  getPostEvents(){
+    if(this.status?.type==="saucy"){
+      return [
+        {type:"textMessage",text:"¡Ensalsado!"},
+        {type:"stateChange",recover:5,onCaster:true},
+      ]
+    }
+    return [];
+  }
+  decrementStatus(){
+    if(this.status?.expiresIn>0){
+
+      this.status.expiresIn-=1;
+      if(this.status.expiresIn===0){
+        let oldStatus = this.status.type;
+        this.update({
+          status :null 
+        })
+        return {
+          type:"textMessage",
+          text:`A ${this.name} se le pasó el estado ${oldStatus}.` 
+        }
+      }
+    }
+    return null;
+  }
   init(container) {
     this.createElement();
     container.appendChild(this.hudElement);

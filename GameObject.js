@@ -7,7 +7,8 @@ class GameObject{
         this.direction = config.direction || "down";
         this.sprite = new Sprite({
             gameObject: this,
-            src:config.src||"/images/characters/people/Char.png",
+            src:config.src||"",
+            useShadow: config.useShadow||false
         });
         this.behaviorLoop = config.behaviorLoop||[];
         this.behaviorLoopIndex = 0;
@@ -25,9 +26,9 @@ class GameObject{
         //Person class inherits from this
     }
     async doBehaviorEvent(map){
+        if(map.overworld.map!==map)return;
         if(this.behaviorLoop[this.behaviorLoopIndex]===undefined)return;
         if(map.isCutscenePlaying || this.behaviorLoop.length ===0||this.isStanding) {
-            console.log("CutScenePlaying or something")
             return;
         }
 

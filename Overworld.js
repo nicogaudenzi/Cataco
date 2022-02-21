@@ -28,16 +28,26 @@ class Overworld{
                 object.sprite.draw(this.ctx,cameraPerson)
             });
             this.map.drawUpperImage(this.ctx,cameraPerson);
-
-            requestAnimationFrame(()=>{
-                step();
-            })
-        }
+            if(!this.map.isPaused){
+                requestAnimationFrame(()=>{
+                    step();
+                })
+            }
+                   }
         step();
     }
     bindActionInput(){
         new KeyPressListener("Enter",()=>{
             this.map.checkForActionCutscene();
+        })
+
+        new KeyPressListener("Escape", ()=>{
+            if(!this.map.isPaused){
+
+                this.map.startCutscene([
+                    {type:"pause"}
+                ])
+            }
         })
     }
     bindHeroPositionCheck(){
@@ -53,16 +63,27 @@ class Overworld{
         this.map.mountObjects();
     }
     init(developing){
+        this.hud = new Hud();
+        this.hud.init(document.querySelector(".game-container"));
+
         this.startMap(window.OverworldMaps.Demo);
+
         this.bindActionInput();
         this.bindHeroPositionCheck();
+        
         this.directionInput= new DirectionInput();
         this.directionInput.init();
+        
         this.startGameLoop();
+        
         if(developing){
-            this.map.startCutscene([
-                {type:"battle"}
-            ]);
+            // const current = object.behaviorLoop[object.behaviorLoopIndex];
+            //         if (current) {
+            //             object.doBehaviorEvent(this);
+            //         }
+            // this.map.startCutscene([
+            //     {type:"battle",enemyId:"julia"}
+            // ]);
         }
         if(window.initScene!== undefined){
             this.map.startCutscene(window.initScene);

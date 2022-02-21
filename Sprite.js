@@ -3,11 +3,9 @@ class Sprite{
         this.image = new Image();
         this.image.src = config.src;
         this.image.onload = ()=>{this.isLoaded = true}
-        
+        this.useShadow=config.useShadow||false;
         //Shadow
         this.shadow = new Image();
-        this.useShadow=true;
-        
         if(this.useShadow){
             this.shadow.src = "/images/characters/shadow.png";
         }
