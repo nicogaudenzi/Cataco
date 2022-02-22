@@ -1,7 +1,7 @@
 window.Enemies = {
   "juan": {
     name: "Juan",
-    src: "/images/characters/people/erio.png",
+    src: "/Cataco/images/characters/people/erio.png",
     pizzas: {
       "a": {
         pizzaId: "s001",
@@ -17,7 +17,7 @@ window.Enemies = {
   },
   "julia": {
     name: "Julia",
-    src: "/images/characters/people/npc1.png",
+    src: "/Cataco/images/characters/people/npc1.png",
     pizzas: {
       "a": {
         hp: 1,
