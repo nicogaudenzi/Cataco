@@ -7,7 +7,7 @@ class Sprite{
         //Shadow
         this.shadow = new Image();
         if(this.useShadow){
-            this.shadow.src = "/images/characters/shadow.png";
+            this.shadow.src = "/Cataco/images/characters/shadow.png";
         }
         this.shadow.onload = ()=>{
             this.isShadowLoaded = true;
