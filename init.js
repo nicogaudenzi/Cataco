@@ -13,10 +13,10 @@ function buildOverworldFromSheets(r){
     let builtOverworld={}
     Object.keys(r.rooms).forEach((room)=>{
         builtOverworld[room] = {
+            id:room,
             lowerSrc : r.rooms[room].lowerSrc,
             upperSrc : r.rooms[room].upperSrc,
             walls : r.rooms[room].walls,
-
             gameObjects : {},
             cutSceneSpaces : r.rooms[room].cutSceneSpaces
         }
@@ -44,8 +44,9 @@ function buildOverworldFromSheets(r){
     // if(the_cookie.maps==="" || the_cookie.maps=== undefined){
     //      }else{
     //      }
+    let the_cookie = localStorage.getItem('maps');
     let imDeveloping= false;
-    if(imDeveloping){
+    if(the_cookie){
         let the_cookie = localStorage.getItem('maps');
         let r = JSON.parse(the_cookie);
         window.OverworldMaps = buildOverworldFromSheets(r);
@@ -56,10 +57,10 @@ function buildOverworldFromSheets(r){
         let r = await requestContent();
         window.OverworldMaps= buildOverworldFromSheets(r);
         window.localizationDict = r.localizationDict;
-
        // window.initScene = r.initScene;
         localStorage.setItem('maps',JSON.stringify(r));
     }
+    document.getElementsByClassName("loader")[0].style.display = "none";
     
     const overworld = new Overworld({element: document.querySelector(".game-container")});
     overworld.init(imDeveloping);

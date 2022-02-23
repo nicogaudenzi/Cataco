@@ -57,16 +57,46 @@ class Overworld{
                 }
             })
     }
-    startMap(mapConfig){
+    startMap(mapConfig,heroInitialState=null){
         this.map = new OverworldMap(mapConfig);
         this.map.overworld = this; 
+        if(heroInitialState){
+             this.map.gameObjects.hero.x= heroInitialState.x;
+             this.map.gameObjects.hero.y= heroInitialState.y;
+             this.map.gameObjects.hero.direction= heroInitialState.direction;
+        }
+        
         this.map.mountObjects();
-    }
-    init(developing){
-        this.hud = new Hud();
-        this.hud.init(document.querySelector(".game-container"));
 
-        this.startMap(window.OverworldMaps.Demo);
+        this.progress.mapId = mapConfig.id;
+        this.progress.startingHeroX= this.map.gameObjects.hero.x;
+        this.progress.startingHeroY= this.map.gameObjects.hero.y;
+        this.progress.startingHeroDirection= this.map.gameObjects.hero.direction;
+    }
+    async init(developing){
+        const container = document.querySelector(".game-container");
+        this.progress = new Progress();
+
+        this.titleScreen = new TitleScreen({
+            progress:this.progress,
+        })
+        let useSaveFile = await this.titleScreen.init(container);
+
+        let initialHeroState=null;
+        // const saveFile = this.progress.getSaveFile();
+        if(useSaveFile){
+            this.progress.load();
+            initialHeroState = {
+                x:this.progress.startingHeroX,
+                y:this.progress.startingHeroY,
+                direction:this.progress.startingHeroDirection,
+            }
+        }
+
+        this.hud = new Hud();
+        this.hud.init(container);
+
+        this.startMap(window.OverworldMaps[this.progress.mapId], initialHeroState);
 
         this.bindActionInput();
         this.bindHeroPositionCheck();

@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/Cataco/images/favicon.ico">
-    <title>Ciencia Arkana</title>
+    <title>Cataco</title>
+    <link href="http://fonts.cdnfonts.com/css/common-pixel" rel="stylesheet">
     <link href="/styles/global.css" type="text/css" rel="stylesheet">
     <link href="/styles/TextMessage.css" type="text/css" rel="stylesheet">
     <link href="/styles/SceneTransition.css" type="text/css" rel="stylesheet">
@@ -17,7 +18,8 @@
     <link href="/styles/Team.css" type="text/css" rel="stylesheet">
     <link href="/styles/Hud.css" type="text/css" rel="stylesheet">
     <link href="/styles/Menus.css" type="text/css" rel="stylesheet">
-    
+    <link rel="stylesheet" href="/styles/TitleScreen.css" type="text/css"> 
+    <link rel="stylesheet" href="/styles/loader.css">   
 </head>
 <body>
     <button id="myBtn">Try it</button> 
@@ -25,11 +27,15 @@
         <canvas class="game-canvas" width="352" height="198"> <!-- 16x9 aspect ratio -->
         </canvas>
     </div>
-
+    <div class = "loader">
+        <h1>Loading...</h1>
+        <p>Only required the first time</p>
+    </div>
     
    <!--Scripts-->
+   <script src="/TitleScreen.js"></script>
    <script src="/State/PlayerState.js"></script>
-  
+    <script src="/Progress.js"></script>
    <script src="/Content/pizzas.js"></script>
    <script src="/Content/actions.js"></script>
    <script src="/Content/enemies.js"></script>
