@@ -57,7 +57,7 @@ function buildOverworldFromSheets(r){
         let r = await requestContent();
         window.OverworldMaps= buildOverworldFromSheets(r);
         window.localizationDict = r.localizationDict;
-       // window.initScene = r.initScene;
+        window.initScene = r.initScene;
         localStorage.setItem('maps',JSON.stringify(r));
     }
     document.getElementsByClassName("loader")[0].style.display = "none";
